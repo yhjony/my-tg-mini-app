@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tap Rush – TG Mini App</title>
+
+  <!-- 1) Telegram WebApp SDK (required for Mini App) -->
+  <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+
+  <!-- 2) Adexium widget (from your publisher panel docs) -->
+  <script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
+  <script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        const adexiumWidget = new AdexiumWidget({wid: '58679fb6-06a7-4310-91ae-65dbc6ea9f29', adFormat: 'interstitial'});
+        adexiumWidget.autoMode();
+    });
+</script>
+
+  <!-- 3) Monetag SDK -->
+  <script async src="https://alwingulla.com/88/tag.min.js" 
+          data-zone="9760949" 
+          data-cfasync="false"></script>
+
+  <style>
+    :root{ --bg:#0b1220; --card:#121a2b; --text:#e7eefc; --accent:#6dd3ff; }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);} 
+    .wrap{min-height:100svh;display:grid;place-items:center;padding:16px}
+    .card{background:var(--card);border-radius:20px;box-shadow:0 8px 20px rgba(0,0,0,.35);padding:20px;width:min(480px,95vw);}
+    h1{margin:6px 0 12px;font-size:22px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .score{font-size:36px;font-weight:800;letter-spacing:1px}
+    .btn{appearance:none;border:0;border-radius:16px;padding:16px 18px;background:var(--accent);color:#001018;font-weight:700;font-size:18px;cursor:pointer;box-shadow:0 6px 12px rgba(109,211,255,.35)}
+    .btn:active{transform:translateY(1px)}
+    .hint{opacity:.75;font-size:13px;margin-top:10px}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+    .tile{aspect-ratio:1;background:#1a2540;border-radius:14px;display:grid;place-items:center;user-select:none;cursor:pointer;font-weight:800;font-size:18px}
+    .tile.active{background:#2b9cff;color:#001018}
+    .adbar{margin-top:14px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Tap Rush</h1>
+      <div class="row">
+        <div class="score">Score: <span id="score">0</span></div>
+        <button id="startBtn" class="btn">Start</button>
+      </div>
+
+      <!-- Simple 4x4 tap grid game -->
+      <div id="grid" class="grid"></div>
+
+      <div class="hint">Tap the highlighted tile before it changes. You have 30 seconds!</div>
+
+      <!-- Optional banner placement area (Adexium handles DOM injection) -->
+      <div id="adBanner" class="adbar"></div>
+    </div>
+  </div>
+
+  <script>
+    // 4) Telegram Mini App bootstrap
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor("secondary_bg_color");
+      tg.setBackgroundColor("secondary_bg_color");
+    }
+
+    // 5) Adexium initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      const WIDGET_ID = 'YOUR_ADEXIUM_WIDGET_ID'; // Replace with your real Adexium wid
+
+      try {
+        const adexiumWidget = new AdexiumWidget({
+          wid: WIDGET_ID,
+          adFormat: 'Interstitial',
+          bannerContainerId: 'adBanner', // optional banner placement
+        });
+
+        adexiumWidget.autoMode(); // Show ad at start
+
+        window.showAdexiumInterstitial = () => adexiumWidget.autoMode();
+      } catch (e) {
+        console.warn('Adexium init error', e);
+      }
+    });
+
+    // 6) Monetag helper
+    function showMonetagInterstitial() {
+      if (window.monetag && typeof window.monetag.show === 'function') {
+        window.monetag.show();
+      } else {
+        console.log('Monetag SDK not ready');
+      }
+    }
+
+    // 7) Tiny tap game logic
+    const grid = document.getElementById('grid');
+    const scoreEl = document.getElementById('score');
+    const startBtn = document.getElementById('startBtn');
+
+    const tiles = [];
+    for (let i = 0; i < 16; i++) {
+      const t = document.createElement('div');
+      t.className = 'tile';
+      t.textContent = i + 1;
+      t.addEventListener('click', () => onTap(i));
+      tiles.push(t);
+      grid.appendChild(t);
+    }
+
+    let active = -1, score = 0, timeLeft = 30, timer = null, tick = null;
+
+    function setActive(idx){
+      tiles.forEach((el,i)=> el.classList.toggle('active', i === idx));
+      active = idx;
+    }
+
+    function randomIdx(){ return Math.floor(Math.random()*16); }
+
+    function onTap(i){
+      if (timer === null) return;
+      if (i === active){
+        score++; scoreEl.textContent = score;
+        setActive(randomIdx());
+      } else {
+        score = Math.max(0, score-1); scoreEl.textContent = score;
+      }
+    }
+
+    function startGame(){
+      if (timer) return;
+      score = 0; scoreEl.textContent = score; timeLeft = 30;
+      setActive(randomIdx());
+      startBtn.disabled = true; startBtn.textContent = 'Playing…';
+
+      tick = setInterval(()=>{ setActive(randomIdx()); }, 800);
+      timer = setInterval(()=>{
+        timeLeft--;
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function endGame(){
+      clearInterval(timer); clearInterval(tick); timer = null; tick = null;
+      tiles.forEach(el=>el.classList.remove('active'));
+      startBtn.disabled = false; startBtn.textContent = 'Start';
+
+      // Show Adexium ad
+      if (typeof window.showAdexiumInterstitial === 'function') {
+        window.showAdexiumInterstitial();
+      }
+
+      // Show Monetag ad
+      showMonetagInterstitial();
+
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    }
+
+    startBtn.addEventListener('click', startGame);
+  </script>
+</body>
+</html>
