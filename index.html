@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+<!-- Adsgram SDK -->
 
-    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-    <script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', () => {
-        const adexiumWidget = new AdexiumWidget({wid: '58679fb6-06a7-4310-91ae-65dbc6ea9f29', adFormat: 'interstitial'});
-        adexiumWidget.autoMode();
+<script>
+    // Adsgram initialize (নিজের blockId বসাও)
+    const sdk = window.Adsgram.init({
+        blockId: "14164",
+        debug: false
     });
 </script>
+
     
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Earn & Reward App</title>
-    
+
     <!-- Google Fonts (Nunito) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
@@ -103,7 +105,7 @@
         #copy-ref-link-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; color: #fff; cursor: pointer; font-weight: 600; }
         .light-theme #copy-ref-link-btn { background-color: var(--primary-color-light); }
         .dark-theme #copy-ref-link-btn { background-color: var(--primary-color-dark); }
-        
+
         /* Task/Bonus Container */
         .task-container { padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         .task-container:last-child { margin-bottom: 0; }
@@ -135,7 +137,7 @@
         .dark-theme #withdraw-form input, .dark-theme #withdraw-form select { background-color: var(--secondary-bg-dark); border: 1px solid var(--border-color-dark); color: var(--text-color-dark); }
         .light-theme input:focus, .light-theme select:focus { outline: none; border-color: var(--primary-color-light); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15); }
         .dark-theme input:focus, .dark-theme select:focus { outline: none; border-color: var(--primary-color-dark); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2); }
-        
+
         /* Bottom Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; display: flex; justify-content: space-around; padding: 5px 0; border-top: 1px solid; z-index: 1000; }
         .light-theme .bottom-nav { background-color: var(--secondary-bg-light); border-top-color: var(--border-color-light); }
@@ -159,14 +161,13 @@
     </style>
 </head>
 <body>
-
     <div id="app">
         <header class="profile-header">
             <div class="profile-info">
-                <img id="user-photo" src="" alt="User Photo">
+                <img id="user-photo" src="" alt="User Photo" />
                 <div class="user-details">
                     <h1 id="user-name">Loading... <i class="fas fa-check-circle verified-icon"></i></h1>
-                    <p>Balince: $<span id="user-points">0</span>TK</p>
+                    <p>Balance: <span id="user-points">0</span> TK</p>
                 </div>
             </div>
         </header>
@@ -178,7 +179,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h3>Daily Ads Watched</h3>
-                        <p><span id="daily-ads-watched">00</span> /  250</p>
+                        <p><span id="daily-ads-watched">00</span> / 250</p>
                     </div>
                     <div class="stat-card">
                         <h3>Total Referrals</h3>
@@ -188,7 +189,7 @@
                 <div class="referral-section">
                     <h3>Refer & Earn More!</h3>
                     <p>Share your link to get bonus points.</p>
-                    <input type="text" id="referral-link" readonly>
+                    <input type="text" id="referral-link" readonly />
                     <button id="copy-ref-link-btn">Copy Referral Link</button>
                 </div>
             </div>
@@ -200,7 +201,7 @@
                     <i class="fas fa-video task-icon"></i>
                     <h3>Watch a Rewarded Ad</h3>
                     <p>Earn 1 TK for every ad.</p>
-                    <button id="watch-ad-btn" class="action-btn">Watch Ad</button>
+                    <button id="watch-ad-btn" class="action-btn"><span class="btn-text">Watch Ad</span><span class="btn-loader"></span></button>
                 </div>
                 <div class="task-container">
                     <i class="fab fa-telegram task-icon"></i>
@@ -215,7 +216,7 @@
                     <button id="join-group-btn" class="action-btn">Join & Claim Bonus</button>
                 </div>
             </div>
-            
+
             <!-- Withdraw Page -->
             <div id="withdraw-page" class="page">
                 <h2>Withdraw Points</h2>
@@ -232,11 +233,11 @@
                     </div>
                     <div class="form-group">
                         <label for="account-number">Account Number/ID:</label>
-                        <input type="text" id="account-number" placeholder="e.g., 012345..." required>
+                        <input type="text" id="account-number" placeholder="e.g., 012345..." required />
                     </div>
                     <div class="form-group">
                         <label for="amount">Points to Withdraw:</label>
-                        <input type="number" id="amount" placeholder="e.g., 02" required>
+                        <input type="number" id="amount" placeholder="e.g., 02" required />
                     </div>
                     <button type="submit" id="withdraw-submit-btn" class="action-btn">
                         <span class="btn-text">Submit Request</span>
@@ -254,31 +255,40 @@
     </div>
 
     <div id="loading-modal" class="modal">
-        <div class="modal-content"><div class="loader"></div><p>Loading Ad...</p></div>
+        <div class="modal-content">
+            <div class="loader"></div>
+            <p id="loading-text">Loading Ad...</p>
+        </div>
     </div>
-    
+
+    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//libtl.com/sdk.js' data-zone='9760949' data-sdk='show_9760949'></script>
-    
+
+    <!-- Monetag SDK (already in your project) -->
+    <script src="//libtl.com/sdk.js" data-zone="9760949" data-sdk="show_9760949"></script>
+
+    <!-- Adsgram SDK -->
+    <script src="https://adsgram.ai/js/adsgram.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tg = window.Telegram.WebApp;
 
-            // --- Configuration ---
-            const BOT_TOKEN = "8234185777:AAG3zFZ0t3k3uKeU5y1DPDjL3cjK2B1v5Ps";
-            const BOT_USERNAME = "TapRushEarnBot"; // Your bot's username
-            const ADMIN_CHAT_ID = "YOUR_TG_ID";
+            // --- Configuration (replace placeholders) ---
+            const BOT_TOKEN = "8234185777:AAG3zFZ0t3k3uKeU5y1DPDjL3cjK2B1v5Ps"; // ⚠️ DO NOT expose real token in production frontend
+            const BOT_USERNAME = "TapRushEarnBot";
+            const ADMIN_CHAT_ID = "8234185777";
             const CHANNEL_LINK = "https://t.me/";
             const GROUP_LINK = "https://t.me/";
             const DAILY_AD_LIMIT = 250;
             const POINTS_PER_AD = 1;
             const CHANNEL_JOIN_BONUS = 10;
-            const GROUP_JOIN_BONUS = 09;
+            const GROUP_JOIN_BONUS = 9;
             const MIN_WITHDRAW_POINTS = 100;
 
             // --- DOM Elements ---
             const userPhotoElem = document.getElementById('user-photo');
-            const userNameElem = document.getElementById('user-name');
+            const userNameElem  = document.getElementById('user-name');
             const userPointsElem = document.getElementById('user-points');
             const dailyAdsWatchedElem = document.getElementById('daily-ads-watched');
             const referralCountElem = document.getElementById('referral-count');
@@ -290,6 +300,7 @@
             const referralLinkElem = document.getElementById('referral-link');
             const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
             const loadingModal = document.getElementById('loading-modal');
+            const loadingText = document.getElementById('loading-text');
 
             // --- State Management ---
             let userState = {
@@ -298,13 +309,14 @@
                 lastAdWatchDate: null,
                 referrals: [],
                 hasJoinedChannel: false,
-                hasJoinedGroup: false, // New state for group join
-                userId: null
+                hasJoinedGroup: false,
+                userId: null,
             };
 
             const saveState = () => {
-                if(userState.userId) {
+                if (userState.userId) {
                     localStorage.setItem(`userState_${userState.userId}`, JSON.stringify(userState));
+                    localStorage.setItem(`nextAd_${userState.userId}`, nextAdNetwork); // persist ad alternation
                 }
             };
 
@@ -312,11 +324,26 @@
                 const savedState = localStorage.getItem(`userState_${userId}`);
                 if (savedState) {
                     userState = JSON.parse(savedState);
-                    // Ensure new state properties exist
                     if (userState.hasJoinedGroup === undefined) userState.hasJoinedGroup = false;
                 }
             };
-            
+
+            // Initialize Adsgram (after SDK script loaded)
+            let adsgram = null;
+            const initAdsgram = () => {
+                try {
+                    adsgram = window.Adsgram && window.Adsgram.init({
+                        blockId: 'YOUR_ADSGRAM_BLOCK_ID', // ← replace with your real blockId
+                        debug: false,
+                    });
+                } catch (e) {
+                    console.warn('Adsgram init failed:', e);
+                }
+            };
+
+            // Track which network to show next (monetag -> adsgram -> monetag ...)
+            let nextAdNetwork = 'monetag';
+
             // --- Core Functions ---
             const initApp = () => {
                 tg.ready();
@@ -325,80 +352,160 @@
 
                 const user = tg.initDataUnsafe.user;
                 if (!user || !user.id) {
-                    tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
+                    tg.showAlert('Could not verify user. Please open this app through Telegram.', () => tg.close());
                     return;
                 }
-                
+
                 userState.userId = user.id;
                 loadState(user.id);
-                
+                initAdsgram();
+
+                // restore ad alternation choice
+                const storedNext = localStorage.getItem(`nextAd_${user.id}`);
+                if (storedNext === 'adsgram' || storedNext === 'monetag') {
+                    nextAdNetwork = storedNext;
+                }
+
                 const today = new Date().toISOString().slice(0, 10);
                 if (userState.lastAdWatchDate !== today) {
                     userState.dailyAdWatchCount = 0;
                     userState.lastAdWatchDate = today;
                 }
-                
+
                 updateUI();
                 setupNavigation();
                 setupEventListeners();
                 saveState();
             };
-            
+
             const updateUI = () => {
                 const user = tg.initDataUnsafe.user;
                 if (user) {
                     userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
                     userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
                 }
-                
+
                 userPointsElem.textContent = userState.points;
                 dailyAdsWatchedElem.textContent = userState.dailyAdWatchCount;
                 referralCountElem.textContent = userState.referrals.length;
 
                 referralLinkElem.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
 
-                // Update task button states
-                if (userState.hasJoinedChannel) {
-                    joinChannelBtn.textContent = 'Bonus Claimed';
-                    joinChannelBtn.disabled = true;
-                }
-                if (userState.hasJoinedGroup) {
-                    joinGroupBtn.textContent = 'Bonus Claimed';
-                    joinGroupBtn.disabled = true;
-                }
+                if (userState.hasJoinedChannel) { joinChannelBtn.textContent = 'Bonus Claimed'; joinChannelBtn.disabled = true; }
+                if (userState.hasJoinedGroup) { joinGroupBtn.textContent = 'Bonus Claimed'; joinGroupBtn.disabled = true; }
+
+                // Show next network on button label (optional UX)
+                const nextName = nextAdNetwork === 'monetag' ? 'Monetag' : 'Adsgram';
+                watchAdBtn.querySelector('.btn-text').textContent = `Watch Ad (${nextName})`;
             };
-            
+
             const setupEventListeners = () => {
                 watchAdBtn.addEventListener('click', handleWatchAd);
                 joinChannelBtn.addEventListener('click', handleJoinChannel);
-                joinGroupBtn.addEventListener('click', handleJoinGroup); // New listener
+                joinGroupBtn.addEventListener('click', handleJoinGroup);
                 withdrawForm.addEventListener('submit', handleWithdraw);
                 copyRefLinkBtn.addEventListener('click', copyReferralLink);
             };
 
+            const openLoading = (text = 'Loading Ad...') => {
+                loadingText.textContent = text;
+                loadingModal.style.display = 'flex';
+                watchAdBtn.classList.add('loading');
+                watchAdBtn.disabled = true;
+            };
+            const closeLoading = () => {
+                loadingModal.style.display = 'none';
+                watchAdBtn.classList.remove('loading');
+                watchAdBtn.disabled = false;
+            };
+
+            const rewardUser = () => {
+                userState.points += POINTS_PER_AD;
+                userState.dailyAdWatchCount++;
+                saveState();
+                updateUI();
+                tg.HapticFeedback.notificationOccurred('success');
+                tg.showAlert(`Congratulations! You've earned ${POINTS_PER_AD} points.`);
+            };
+
+            // ── Alternating Ads (Monetag ↔ Adsgram) ───────────────────────────
             const handleWatchAd = () => {
                 if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
-                    tg.showAlert("You have reached your daily ad watch limit."); return;
+                    tg.showAlert('You have reached your daily ad watch limit.');
+                    return;
                 }
-                loadingModal.style.display = 'flex';
-                show_9760949().then(() => {
-                    userState.points += POINTS_PER_AD;
-                    userState.dailyAdWatchCount++;
-                    saveState();
-                    updateUI();
-                    tg.HapticFeedback.notificationOccurred('success');
-                    tg.showAlert(`Congratulations! You've earned ${POINTS_PER_AD} points.`);
-                }).catch(() => {
-                    tg.showAlert("Ad could not be loaded. Please try again later.");
-                }).finally(() => {
-                    loadingModal.style.display = 'none';
+
+                // Decide which network to try first
+                const tryMonetagFirst = nextAdNetwork === 'monetag';
+                if (tryMonetagFirst) {
+                    showMonetagWithFallback();
+                } else {
+                    showAdsgramWithFallback();
+                }
+            };
+
+            const showMonetagWithFallback = () => {
+                openLoading('Loading Monetag Ad...');
+                Promise.resolve()
+                    .then(() => show_9760949())
+                    .then(() => {
+                        rewardUser();
+                        nextAdNetwork = 'adsgram'; // toggle next
+                    })
+                    .catch(() => {
+                        // Fallback to Adsgram if Monetag fails
+                        return showAdsgram(true);
+                    })
+                    .finally(() => {
+                        saveState();
+                        closeLoading();
+                    });
+            };
+
+            const showAdsgramWithFallback = () => {
+                openLoading('Loading Adsgram Ad...');
+                showAdsgram(false)
+                    .then(() => {
+                        // success already rewarded in showAdsgram
+                        nextAdNetwork = 'monetag';
+                    })
+                    .catch(() => {
+                        // Fallback to Monetag if Adsgram fails
+                        return Promise.resolve()
+                            .then(() => openLoading('Retrying with Monetag...'))
+                            .then(() => show_9760949())
+                            .then(() => { rewardUser(); nextAdNetwork = 'adsgram'; })
+                            .catch(() => { tg.showAlert('Ad could not be loaded. Please try again later.'); });
+                    })
+                    .finally(() => {
+                        saveState();
+                        closeLoading();
+                    });
+            };
+
+            const showAdsgram = (fromFallback) => {
+                return new Promise((resolve, reject) => {
+                    try {
+                        if (!adsgram || !adsgram.show) {
+                            // try re-init once
+                            initAdsgram();
+                        }
+                        if (!adsgram || !adsgram.show) {
+                            return reject(new Error('Adsgram SDK not ready'));
+                        }
+                        if (!fromFallback) openLoading('Loading Adsgram Ad...');
+                        adsgram.show()
+                            .then(() => { rewardUser(); resolve(); })
+                            .catch((e) => { reject(e); });
+                    } catch (e) {
+                        reject(e);
+                    }
                 });
             };
-            
+
+            // ── Other Task Handlers ───────────────────────────────────────────
             const handleJoinChannel = () => {
-                if(userState.hasJoinedChannel) {
-                    tg.showAlert('You have already claimed this bonus.'); return;
-                }
+                if (userState.hasJoinedChannel) { tg.showAlert('You have already claimed this bonus.'); return; }
                 tg.openTelegramLink(CHANNEL_LINK);
                 setTimeout(() => {
                     userState.points += CHANNEL_JOIN_BONUS;
@@ -410,9 +517,7 @@
             };
 
             const handleJoinGroup = () => {
-                if(userState.hasJoinedGroup) {
-                    tg.showAlert('You have already claimed this bonus.'); return;
-                }
+                if (userState.hasJoinedGroup) { tg.showAlert('You have already claimed this bonus.'); return; }
                 tg.openTelegramLink(GROUP_LINK);
                 setTimeout(() => {
                     userState.points += GROUP_JOIN_BONUS;
@@ -429,7 +534,7 @@
                 const accountNumber = document.getElementById('account-number').value;
                 const amount = parseInt(document.getElementById('amount').value, 10);
 
-                if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
+                if (isNaN(amount) || amount <= 0) { tg.showAlert('Please enter a valid amount.'); return; }
                 if (amount < MIN_WITHDRAW_POINTS) { tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_POINTS} points.`); return; }
                 if (amount > userState.points) { tg.showAlert("You don't have enough points."); return; }
 
@@ -439,26 +544,28 @@
                 userState.points -= amount;
                 saveState();
                 updateUI();
-                
+
                 const user = tg.initDataUnsafe.user;
                 const message = `<b>New Withdraw Request!</b>\n-----------------------------------\n<b>User:</b> ${user.first_name || ''} ${user.last_name || ''} (@${user.username || 'N/A'})\n<b>User ID:</b> <code>${user.id}</code>\n-----------------------------------\n<b>Method:</b> ${method}\n<b>Account:</b> <code>${accountNumber}</code>\n<b>Amount:</b> ${amount} Points\n-----------------------------------\n<b>Date:</b> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}`;
-                
+
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message, parse_mode: 'HTML'})
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message, parse_mode: 'HTML' }),
                     });
                     const result = await response.json();
                     if (result.ok) {
                         tg.HapticFeedback.notificationOccurred('success');
-                        tg.showAlert("Withdrawal request submitted successfully!");
+                        tg.showAlert('Withdrawal request submitted successfully!');
                         withdrawForm.reset();
-                    } else { throw new Error(result.description); }
+                    } else {
+                        throw new Error(result.description);
+                    }
                 } catch (error) {
                     tg.HapticFeedback.notificationOccurred('error');
-                    tg.showAlert("Failed to submit request. Your points have been returned.");
+                    tg.showAlert('Failed to submit request. Your points have been returned.');
                     userState.points += amount;
                     saveState();
                     updateUI();
@@ -467,23 +574,23 @@
                     withdrawSubmitBtn.disabled = false;
                 }
             };
-            
+
             const copyReferralLink = () => {
                 navigator.clipboard.writeText(referralLinkElem.value).then(() => {
                     tg.HapticFeedback.notificationOccurred('success');
-                    tg.showAlert("Referral link copied!");
+                    tg.showAlert('Referral link copied!');
                 });
             };
 
             const setupNavigation = () => {
                 const navButtons = document.querySelectorAll('.nav-btn');
                 const pages = document.querySelectorAll('.page');
-                navButtons.forEach(button => {
+                navButtons.forEach((button) => {
                     button.addEventListener('click', () => {
                         const pageId = button.dataset.page;
-                        pages.forEach(page => page.classList.remove('active'));
+                        pages.forEach((page) => page.classList.remove('active'));
                         document.getElementById(pageId).classList.add('active');
-                        navButtons.forEach(btn => btn.classList.remove('active'));
+                        navButtons.forEach((btn) => btn.classList.remove('active'));
                         button.classList.add('active');
                     });
                 });
